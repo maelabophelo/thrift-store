@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  description   String
+  price         Float
+  salePrice     Float?
+  sku           String         @unique
+  brand         String?
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  stock         Int            @default(0)
+  images        String         // JSON array of image URLs
+  sizes         String         // JSON array e.g. ["S","M","L"]
+  colours       String         // JSON array e.g. ["Black","White"]
+  tags          String?        // JSON array
+  isFeatured    Boolean        @default(false)
+  isNewArrival  Boolean        @default(false)
+  isOnSale      Boolean        @default(false)
+  isActive      Boolean        @default(true)
+  orderItems    OrderItem[]
+  wishlistItems WishlistItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Customer {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  password        String?
+  name            String?
+  phone           String?
+  preferredPepStore String?
+  preferredPepAddress String?
+  preferredPepCity String?
+  preferredPepProvince String?
+  orders          Order[]
+  wishlistItems   WishlistItem[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  orderNumber       String      @unique
+  customerId        String?
+  customer          Customer?   @relation(fields: [customerId], references: [id])
+  customerName      String
+  customerEmail     String
+  customerPhone     String
+  // PAXI / PEP collection
+  pepStoreName      String
+  pepStoreAddress   String
+  pepStoreCity      String
+  pepStoreProvince  String
+  paxiReference     String?
+  customerNotes     String?
+  // Totals (server-validated)
+  subtotal          Float
+  deliveryFee       Float
+  total             Float
+  // Status
+  paymentStatus     String      @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  orderStatus       String      @default("PENDING_PAYMENT")
+  // Payment
+  paymentMethod     String?
+  paymentProvider   String?
+  paymentReference  String?
+  paymentVerifiedAt DateTime?
+  items             OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String
+  price     Float
+  quantity  Int
+  size      String?
+  colour    String?
+  image     String?
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([customerId, productId])
+}
+
+model StoreSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model PageContent {
+  id        String   @id @default(cuid())
+  slug      String   @unique // privacy, terms, returns, delivery, paxi, contact
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt
+}

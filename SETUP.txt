@@ -1,0 +1,93 @@
+============================================
+  THE THRIFT STORE (SHOES ONLY) - SETUP
+============================================
+
+BEFORE YOU START
+----------------
+1. Install Node.js LTS from: https://nodejs.org
+   (Download the Windows installer, click Next until done)
+2. Restart your computer after installing Node.js
+3. Delete any old thrift-store folders on your PC
+
+
+STEP 1 - DOWNLOAD & EXTRACT
+---------------------------
+1. Download the file: thrift-store-FINAL.zip
+2. Right-click the zip -> Extract All
+3. Extract to: C:\Users\YOURNAME\
+   (so you get C:\Users\YOURNAME\thrift-store\ with package.json inside)
+
+IMPORTANT: After extract, open the folder. You must SEE package.json.
+If you see another folder named thrift-store inside, open THAT one.
+The correct folder is the one that contains package.json.
+
+
+STEP 2 - OPEN POWERSHELL IN THAT FOLDER
+---------------------------------------
+1. Open File Explorer
+2. Go to the thrift-store folder (the one with package.json)
+3. Click the address bar, type: powershell
+4. Press Enter
+
+OR in PowerShell type:
+  cd C:\Users\YOURNAME\thrift-store
+
+
+STEP 3 - INSTALL (wait 2-5 minutes)
+-----------------------------------
+  npm install
+
+
+STEP 4 - CREATE SETTINGS FILE
+-----------------------------
+  copy .env.example .env
+
+
+STEP 5 - CREATE DATABASE
+------------------------
+  npx prisma db push
+
+
+STEP 6 - ADD DEMO SHOES
+-----------------------
+  npx tsx prisma/seed.ts
+
+You should see: Seed complete! (shoes only)
+
+
+STEP 7 - START THE WEBSITE
+--------------------------
+  npm run dev
+
+When it says "Ready", open your browser:
+
+  Store:  http://localhost:3000
+  Admin:  http://localhost:3000/admin/login
+
+  Email:    admin@thethriftstore.co.za
+  Password: ChangeMeImmediately123!
+
+
+TO STOP THE SITE
+----------------
+In PowerShell press: Ctrl + C
+
+
+TO START AGAIN LATER
+--------------------
+1. Open PowerShell in the thrift-store folder
+2. Run: npm run dev
+3. Open http://localhost:3000
+
+
+ADDING YOUR OWN SHOES
+---------------------
+1. Login to admin
+2. Products -> + Add Product
+3. Put photos in: public\images\
+4. Image URL example: /images/my-shoe.jpg
+
+
+NEED HELP?
+----------
+Copy any red error from PowerShell and send it.
